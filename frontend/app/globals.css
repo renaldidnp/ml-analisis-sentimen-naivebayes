@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-paper text-ink font-sans antialiased;
+  }
+
+  ::selection {
+    @apply bg-turmeric/30 text-ink;
+  }
+
+  :focus-visible {
+    outline: 2px solid theme("colors.turmeric-deep");
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+}
+
+@layer components {
+  .eyebrow {
+    @apply font-mono text-xs uppercase tracking-[0.18em] text-muted;
+  }
+
+  .tag-chip {
+    @apply inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-mono leading-none;
+  }
+
+  .tag-chip--positive {
+    @apply bg-sage/15 text-sage;
+  }
+
+  .tag-chip--negative {
+    @apply bg-brick/15 text-brick;
+  }
+
+  .tag-chip--neutral {
+    @apply bg-muted/15 text-muted-deep;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
