@@ -1,43 +1,46 @@
-export interface TweetResult {
+export type SentimentLabel = "positif" | "negatif" | "netral" | string;
+
+export type TweetResult = {
   text: string;
-  label: string;
+  label: SentimentLabel;
   username?: string | null;
   created_at?: string | null;
-}
+};
 
-export interface SentimentCounts {
-  positif: number;
-  negatif: number;
-  netral: number;
-}
-
-export interface AnalysisResponse {
+export type AnalysisResult = {
   total: number;
-  counts: SentimentCounts;
+  counts: { positif: number; negatif: number; netral: number };
   ratio: Record<string, number>;
   results: TweetResult[];
-}
+};
 
-export async function analyzeCsv(file: File): Promise<AnalysisResponse> {
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000";
+
+export async function analyzeCsv(file: File, textColumn?: string): Promise<AnalysisResult> {
   const formData = new FormData();
   formData.append("file", file);
+  if (textColumn) formData.append("text_column", textColumn);
 
-  const response = await fetch("/api/analyze", {
-    method: "POST",
-    body: formData,
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${API_URL}/api/analyze`, {
+      method: "POST",
+      body: formData,
+    });
+  } catch {
+    throw new Error("Tidak bisa menghubungi server. Pastikan backend berjalan di " + API_URL);
+  }
 
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => null);
-    const message = errorData?.detail || `Error ${response.status}: Gagal mengolah file.`;
+  if (!res.ok) {
+    let message = "Gagal memproses file. Coba lagi.";
+    try {
+      const body = await res.json();
+      if (body?.detail) message = body.detail;
+    } catch {
+      // respons bukan JSON, pakai pesan default
+    }
     throw new Error(message);
   }
 
-  return response.json();
-}
-
-export async function saveResult(data: AnalysisResponse): Promise<void> {
-  if (typeof window !== "undefined") {
-    sessionStorage.setItem("sentiment_result", JSON.stringify(data));
-  }
+  return res.json();
 }

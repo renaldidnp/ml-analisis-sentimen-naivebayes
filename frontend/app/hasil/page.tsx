@@ -2,28 +2,21 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { AnalysisResponse } from "@/lib/api";
+import { clearResult, loadResult, type AnalysisResult } from "@/lib/api";
 
 export default function HasilPage() {
-  const [data, setData] = useState<AnalysisResponse | null>(null);
+  const [data, setData] = useState<AnalysisResult | null>(null);
 
   useEffect(() => {
-    const saved = sessionStorage.getItem("sentiment_result");
-    if (saved) {
-      try {
-        setData(JSON.parse(saved));
-      } catch (err) {
-        console.error("Gagal membaca hasil dari storage", err);
-      }
-    }
+    setData(loadResult());
   }, []);
 
   if (!data) {
     return (
       <main className="mx-auto max-w-4xl px-6 py-20 text-center">
         <h1 className="font-display text-2xl text-ink">Belum Ada Data</h1>
-        <p className="mt-2 text-muted font-sans text-sm">Silakan unggah file CSV atau XLSX terlebih dahulu.</p>
-        <Link href="/" className="mt-6 inline-block rounded-full bg-moss-deep px-5 py-2 text-sm text-paper hover:opacity-90">
+        <p className="mt-2 text-muted font-sans text-sm">Silakan unggah file CSV terlebih dahulu.</p>
+        <Link href="/" className="mt-6 inline-block rounded-full bg-ink px-5 py-2 text-sm text-paper hover:opacity-90">
           Kembali ke Beranda
         </Link>
       </main>
@@ -37,28 +30,28 @@ export default function HasilPage() {
           <span className="eyebrow mb-1 block">Hasil Analisis</span>
           <h1 className="font-display text-3xl text-ink">Ringkasan Sentimen</h1>
         </div>
-        <Link href="/" className="self-start rounded-full border border-ink/15 px-4 py-1.5 font-sans text-sm text-ink hover:border-moss-deep/40 sm:self-auto">
+        <Link href="/" onClick={() => clearResult()} className="self-start rounded-full border border-ink/15 px-4 py-1.5 font-sans text-sm text-ink hover:border-ink/30 sm:self-auto">
           Analisis File Lain
         </Link>
       </header>
 
       {/* Kartu Statistik */}
-      <div className="grid gap-4 sm:grid-cols-4 mb-10">
+      <div className="mb-10 grid gap-4 sm:grid-cols-4">
         <div className="rounded-xl border border-ink/10 bg-paper-deep/50 p-5">
-          <p className="font-mono text-xs text-muted uppercase">Total Tweet</p>
+          <p className="font-mono text-xs uppercase text-muted">Total Tweet</p>
           <p className="mt-2 font-display text-3xl text-ink">{data.total}</p>
         </div>
         <div className="rounded-xl border border-ink/10 bg-paper-deep/50 p-5">
-          <p className="font-mono text-xs text-moss-deep uppercase">Positif</p>
-          <p className="mt-2 font-display text-3xl text-moss-deep">{data.counts.positif}</p>
+          <p className="font-mono text-xs uppercase text-sage">Positif</p>
+          <p className="mt-2 font-display text-3xl text-sage">{data.counts.positif}</p>
         </div>
         <div className="rounded-xl border border-ink/10 bg-paper-deep/50 p-5">
-          <p className="font-mono text-xs text-clay uppercase">Negatif</p>
-          <p className="mt-2 font-display text-3xl text-clay">{data.counts.negatif}</p>
+          <p className="font-mono text-xs uppercase text-brick">Negatif</p>
+          <p className="mt-2 font-display text-3xl text-brick">{data.counts.negatif}</p>
         </div>
         <div className="rounded-xl border border-ink/10 bg-paper-deep/50 p-5">
-          <p className="font-mono text-xs text-slate uppercase">Netral</p>
-          <p className="mt-2 font-display text-3xl text-slate">{data.counts.netral}</p>
+          <p className="font-mono text-xs uppercase text-muted-deep">Netral</p>
+          <p className="mt-2 font-display text-3xl text-muted-deep">{data.counts.netral}</p>
         </div>
       </div>
 

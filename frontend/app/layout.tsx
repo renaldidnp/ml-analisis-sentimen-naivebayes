@@ -23,22 +23,13 @@ const plexMono = IBM_Plex_Mono({
 
 export const metadata: Metadata = {
   title: "Rasa — Analisis Sentimen dari CSV Tweet",
-  description:
-    "Unggah data tweet dalam format CSV dan lihat ringkasan sentimen publik dalam hitungan detik.",
+  description: "Unggah data tweet dalam format CSV dan lihat ringkasan sentimen publik dalam hitungan detik.",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="id">
-      <body
-        className={`${fraunces.variable} ${inter.variable} ${plexMono.variable}`}
-      >
-        {children}
-      </body>
+      <body className={`${fraunces.variable} ${inter.variable} ${plexMono.variable}`}>{children}</body>
     </html>
   );
 }

@@ -8,7 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 class Settings(BaseSettings):
     cors_origins: str = "http://localhost:3000"
     max_upload_mb: int = 25
-    text_column: str = "full_text"
+    text_column: str = "Tweet"
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 

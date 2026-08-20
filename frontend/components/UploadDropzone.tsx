@@ -1,8 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
-import { analyzeCsv, saveResult } from "@/lib/api";
+import { analyzeCsv, type AnalysisResult } from "@/lib/api";
 
 type Status = "idle" | "dragging" | "ready" | "processing" | "error";
 
@@ -12,8 +11,7 @@ function formatBytes(bytes: number) {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-export default function UploadDropzone() {
-  const router = useRouter();
+export default function UploadDropzone({ onSuccess }: { onSuccess: (result: AnalysisResult) => void }) {
   const [status, setStatus] = useState<Status>("idle");
   const [file, setFile] = useState<File | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -21,15 +19,8 @@ export default function UploadDropzone() {
 
   const acceptFile = useCallback((candidate: File | undefined) => {
     if (!candidate) return;
-
-    const fileName = candidate.name.toLowerCase();
-    const isValidType =
-      candidate.type === "text/csv" ||
-      candidate.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
-      candidate.type === "application/vnd.ms-excel" ||
-      fileName.endsWith(".csv") ||
-      fileName.endsWith(".xlsx") ||
-      fileName.endsWith(".xls");
+    const name = candidate.name.toLowerCase();
+    const isValidType = name.endsWith(".csv") || name.endsWith(".xlsx") || candidate.type === "text/csv" || candidate.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
     if (!isValidType) {
       setErrorMsg("File harus berformat .csv atau .xlsx");
@@ -60,8 +51,10 @@ export default function UploadDropzone() {
     setErrorMsg(null);
     try {
       const result = await analyzeCsv(file);
-      saveResult(result);
-      router.push("/hasil");
+      onSuccess(result);
+      setFile(null);
+      setStatus("idle");
+      if (inputRef.current) inputRef.current.value = "";
     } catch (err) {
       setErrorMsg(err instanceof Error ? err.message : "Gagal memproses file. Coba lagi.");
       setStatus("error");
@@ -94,11 +87,11 @@ export default function UploadDropzone() {
           status === "dragging" ? "border-turmeric-deep bg-turmeric/10" : status === "error" ? "border-brick/40 bg-brick/5" : "border-ink/20 bg-white/50 hover:border-ink/35 hover:bg-white/70"
         }`}
       >
-        <input ref={inputRef} type="file" accept=".csv,.xlsx,.xls,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" className="hidden" onChange={(e) => acceptFile(e.target.files?.[0])} />
+        <input ref={inputRef} type="file" accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" className="hidden" onChange={(e) => acceptFile(e.target.files?.[0])} />
 
         {!file && (
           <>
-            <span className="font-display text-lg text-ink">Tarik file CSV atau XLSX ke sini</span>
+            <span className="font-display text-lg text-ink">Tarik file CSV/XLSX ke sini</span>
             <span className="mt-1 font-mono text-xs text-muted">atau klik untuk memilih dari perangkatmu</span>
           </>
         )}
@@ -142,7 +135,7 @@ export default function UploadDropzone() {
       </button>
 
       <p className="mt-3 font-mono text-[11px] leading-relaxed text-muted">
-        format: .csv, .xlsx, .xls, kolom teks bernama <code className="text-ink">full_text</code>, maks. 25 MB
+        format: .csv atau .xlsx, kolom teks bernama <code className="text-ink">Tweet</code>, maks. 25 MB
       </p>
     </div>
   );
