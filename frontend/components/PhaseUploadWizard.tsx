@@ -26,7 +26,7 @@ function isValidFile(candidate: File) {
 }
 
 /**
- * Wizard upload 3 fase (Pra-pencanangan / Peluncuran awal / Pasca-peluncuran).
+ * Wizard upload 3 fase (Pra-peluncuran / Peluncuran awal / Pasca-peluncuran).
  * Tiap fase diupload terpisah ke POST /api/analyze dengan parameter `fase`.
  * Setelah SEMUA fase selesai (status "done"), onAllDone dipanggil supaya
  * halaman induk bisa menampilkan dashboard temporal (4.7).

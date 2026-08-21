@@ -2,13 +2,12 @@
 
 import { useRef, useState } from "react";
 import AnnotatedSample from "@/components/AnnotatedSample";
-import UploadDropzone from "@/components/UploadDropzone";
 import ResultSummary from "@/components/ResultSummary";
 import SentimentChart from "@/components/SentimentChart";
 import TweetTable from "@/components/TweetTable";
 import PhaseUploadWizard from "@/components/PhaseUploadWizard";
 import TemporalDashboard from "@/components/TemporalDashboard";
-import type { AnalysisResult, FaseKey } from "@/lib/api";
+import { FASE_LIST, type AnalysisResult, type FaseKey } from "@/lib/api";
 
 const steps = [
   {
@@ -34,17 +33,28 @@ const csvColumns = [
   { name: "username", required: false, note: "ditampilkan di tabel hasil" },
 ];
 
+const initialResults: Record<FaseKey, AnalysisResult | null> = {
+  pra: null,
+  awal: null,
+  pasca: null,
+};
+
 export default function Home() {
-  const [result, setResult] = useState<AnalysisResult | null>(null);
+  const [results, setResults] = useState<Record<FaseKey, AnalysisResult | null>>(initialResults);
+  const [activeFase, setActiveFase] = useState<FaseKey | null>(null);
   const [semuaSelesai, setSemuaSelesai] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
 
   const handlePhaseAnalyzed = (fase: FaseKey, r: AnalysisResult) => {
-    setResult(r); // atau gabungkan dengan hasil fase lain kalau perlu total keseluruhan
+    setResults((prev) => ({ ...prev, [fase]: r }));
+    setActiveFase(fase);
     requestAnimationFrame(() => {
       resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   };
+
+  const faseSelesai = FASE_LIST.filter((f) => results[f.key] !== null);
+  const activeResult = activeFase ? results[activeFase] : null;
 
   return (
     <main>
@@ -83,7 +93,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Analisis temporal */}
+      {/* Analisis temporal — perbandingan antar fase, inti dari judul skripsi */}
       {semuaSelesai && (
         <section className="border-t border-ink/10 bg-paper-deep/40">
           <div className="mx-auto max-w-6xl px-6 py-16 sm:px-10">
@@ -94,31 +104,47 @@ export default function Home() {
         </section>
       )}
 
-      {/* Hasil analisis - tampil di halaman yang sama, tanpa pindah route */}
-      {result && (
+      {/* Hasil analisis per fase - tab selector, tanpa pindah route */}
+      {activeResult && activeFase && (
         <section ref={resultRef} className="border-t border-ink/10 bg-paper-deep/40 scroll-mt-6">
           <div className="mx-auto max-w-6xl px-6 py-16 sm:px-10">
             <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
               <div>
                 <p className="eyebrow mb-2">Hasil analisis</p>
-                <h2 className="font-display text-2xl text-ink sm:text-3xl">{result.total} tweet sudah diberi label.</h2>
+                <h2 className="font-display text-2xl text-ink sm:text-3xl">{activeResult.total} tweet sudah diberi label.</h2>
               </div>
-              <button type="button" onClick={() => setResult(null)} className="rounded-full border border-ink/15 px-4 py-1.5 font-mono text-xs text-muted hover:border-ink/30 hover:text-ink">
+              <button type="button" onClick={() => setActiveFase(null)} className="rounded-full border border-ink/15 px-4 py-1.5 font-mono text-xs text-muted hover:border-ink/30 hover:text-ink">
                 Tutup hasil
               </button>
             </div>
 
+            {/* Tab pemilih fase - hanya fase yang sudah dianalisis yang muncul */}
+            {faseSelesai.length > 1 && (
+              <div className="mb-8 flex gap-2">
+                {faseSelesai.map(({ key, label }) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => setActiveFase(key)}
+                    className={`rounded-full px-4 py-1.5 font-mono text-xs transition-colors ${activeFase === key ? "bg-ink text-paper" : "border border-ink/15 text-muted hover:border-ink/30 hover:text-ink"}`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            )}
+
             <div className="mb-8">
-              <ResultSummary total={result.total} counts={result.counts} ratio={result.ratio} />
+              <ResultSummary total={activeResult.total} counts={activeResult.counts} ratio={activeResult.ratio} />
             </div>
 
             <div className="mb-8">
-              <SentimentChart counts={result.counts} />
+              <SentimentChart counts={activeResult.counts} />
             </div>
 
             <div>
               <p className="eyebrow mb-4">Rincian per tweet</p>
-              <TweetTable results={result.results} />
+              <TweetTable results={activeResult.results} />
             </div>
           </div>
         </section>

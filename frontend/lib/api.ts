@@ -26,13 +26,13 @@ export type AnalysisResult = {
 export type FaseKey = "pra" | "awal" | "pasca";
 
 export const FASE_LIST: { key: FaseKey; label: string }[] = [
-  { key: "pra", label: "Pra-pencanangan" },
+  { key: "pra", label: "Pra-peluncuran" },
   { key: "awal", label: "Peluncuran awal" },
   { key: "pasca", label: "Pasca-peluncuran" },
 ];
 
 export const FASE_LABEL: Record<FaseKey, string> = {
-  pra: "Pra-pencanangan",
+  pra: "Pra-peluncuran",
   awal: "Peluncuran awal",
   pasca: "Pasca-peluncuran",
 };
@@ -77,10 +77,7 @@ export async function analyzeCsv(file: File, fase: FaseKey, textColumn?: string,
 // BARU: fungsi & tipe untuk endpoint temporal (BAB 4.7)
 // ============================================================
 
-export type TemporalStatus = Record<
-  FaseKey,
-  { label: string; tersedia: boolean; jumlah_data: number; jumlah_bertanggal: number }
->;
+export type TemporalStatus = Record<FaseKey, { label: string; tersedia: boolean; jumlah_data: number; jumlah_bertanggal: number }>;
 
 export type PerFaseResponse = {
   fase: string[];

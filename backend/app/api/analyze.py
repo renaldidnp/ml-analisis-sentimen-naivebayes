@@ -16,7 +16,7 @@ ALLOWED_EXTENSIONS = (".csv", ".xlsx")
 
 FASE_VALUES = ("pra", "awal", "pasca")
 FASE_LABEL = {
-    "pra": "Pra-pencanangan",
+    "pra": "Pra-peluncuran",
     "awal": "Peluncuran awal",
     "pasca": "Pasca-peluncuran",
 }

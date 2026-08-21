@@ -23,7 +23,7 @@ RESULTS_DIR = Path(settings.MODEL_DIR).parent / "storage" / "results"
 
 ORDER_FASE = ["pra", "awal", "pasca"]
 FASE_LABEL = {
-    "pra": "Pra-pencanangan",
+    "pra": "Pra-peluncuran",
     "awal": "Peluncuran awal",
     "pasca": "Pasca-peluncuran",
 }
