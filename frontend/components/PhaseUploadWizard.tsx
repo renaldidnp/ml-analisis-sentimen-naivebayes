@@ -62,11 +62,15 @@ export default function PhaseUploadWizard({ onAllDone, onPhaseAnalyzed }: { onAl
     updateSlot(fase, { status: "processing", errorMsg: null });
     try {
       const result = await analyzeCsv(slot.file, fase);
-      updateSlot(fase, { status: "done", result });
-      onPhaseAnalyzed?.(fase, result);
 
-      const semuaSelesai = FASE_LIST.every((f) => (f.key === fase ? true : slots[f.key].status === "done"));
-      if (semuaSelesai) onAllDone();
+      setSlots((prev) => {
+        const next = { ...prev, [fase]: { ...prev[fase], status: "done" as const, result } };
+        const semuaSelesai = FASE_LIST.every((f) => next[f.key].status === "done");
+        if (semuaSelesai) queueMicrotask(() => onAllDone());
+        return next;
+      });
+
+      onPhaseAnalyzed?.(fase, result);
     } catch (err) {
       updateSlot(fase, {
         status: "error",
