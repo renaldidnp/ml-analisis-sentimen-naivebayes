@@ -3,77 +3,72 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --bg-paper: #f8fafc;
+    --bg-paper-subtle: #f1f5f9;
+    --text-ink: #0f172a;
+    --text-muted: #64748b;
+    --accent-blue: #2563eb;
+    --accent-blue-light: #dbeafe;
+  }
+
   html {
     scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
   }
 
   body {
-    @apply bg-paper text-ink font-sans antialiased relative;
+    @apply bg-[#F8FAFC] text-[#0F172A] font-sans antialiased relative selection:bg-blue-100 selection:text-blue-900;
   }
 
-  /* tekstur grain tipis, biar nggak flat kayak default AI-gen page */
+  /* Micro-texture dot grid yang lebih bersih */
   body::before {
     content: "";
     position: fixed;
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    opacity: 0.05;
-    background-image: radial-gradient(circle at 1px 1px, theme("colors.ink") 1px, transparent 0);
-    background-size: 26px 26px;
+    opacity: 0.04;
+    background-image: radial-gradient(#0f172a 0.75px, transparent 0.75px);
+    background-size: 16px 16px;
   }
 
   main {
     @apply relative z-10;
   }
 
-  ::selection {
-    @apply bg-turmeric/30 text-ink;
-  }
-
   :focus-visible {
-    outline: 2px solid theme("colors.turmeric-deep");
-    outline-offset: 3px;
-    border-radius: 2px;
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
   }
 }
 
 @layer components {
   .eyebrow {
-    @apply font-mono text-xs uppercase tracking-[0.18em] text-muted;
+    @apply font-mono text-[11px] uppercase tracking-[0.2em] text-[#64748B] font-medium;
   }
 
   .tag-chip {
-    @apply inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-mono leading-none;
+    @apply inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-[11px] font-mono leading-none font-medium border;
   }
 
   .tag-chip--positive {
-    @apply bg-sage/15 text-sage;
+    @apply bg-emerald-50 text-emerald-800 border-emerald-200/60;
   }
 
   .tag-chip--negative {
-    @apply bg-brick/15 text-brick;
+    @apply bg-rose-50 text-rose-800 border-rose-200/60;
   }
 
   .tag-chip--neutral {
-    @apply bg-muted/15 text-muted-deep;
+    @apply bg-slate-100 text-slate-700 border-slate-200;
   }
 
-  /* divider gradasi, ganti border-t solid yang bikin section terasa dipotong kaku */
   .section-divider {
-    @apply h-px w-full bg-gradient-to-r from-transparent via-ink/10 to-transparent;
+    @apply h-px w-full bg-slate-200/80;
   }
 
   .card-surface {
-    @apply rounded-2xl border border-ink/10 bg-white/60 transition-shadow duration-300 hover:shadow-[0_8px_30px_-12px_rgba(25,31,27,0.15)];
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+    @apply rounded-xl border border-slate-200/80 bg-white/90 shadow-[0_1px_3px_0_rgba(0,0,0,0.02)] transition-all duration-200 hover:border-blue-200 hover:shadow-[0_4px_16px_-2px_rgba(37,99,235,0.08)];
   }
 }

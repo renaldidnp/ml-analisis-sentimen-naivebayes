@@ -10,18 +10,18 @@ import TemporalDashboard from "@/components/TemporalDashboard";
 import { FASE_LIST, type AnalysisResult, type FaseKey } from "@/lib/api";
 
 const steps = [
-  { n: "01", title: "Unggah", body: "Tarik file CSV atau XLSX berisi kolom Tweet ke kotak unggah, atau pilih dari perangkatmu." },
-  { n: "02", title: "Diproses", body: "Teks dibersihkan lalu diklasifikasikan sebagai positif, negatif, atau netral." },
-  { n: "03", title: "Lihat hasil", body: "Ringkasan distribusi sentimen, grafik, dan tabel per-tweet muncul di halaman yang sama." },
+  { n: "01", title: "Unggah File", body: "Format CSV atau XLSX dengan kolom berisi teks tweet. Parsing otomatis secara instan." },
+  { n: "02", title: "Pemrosesan NLP", body: "Pembersihan noise teks, ekstraksi kata kunci, dan klasifikasi model sentimen." },
+  { n: "03", title: "Dashboard Analitik", body: "Visualisasi distribusi sentimen, tren waktu, dan tabel data terperinci." },
 ];
 
 const csvColumns = [
-  { name: "Tweet", required: true, note: "isi teks tweet yang dianalisis" },
-  { name: "created_at", required: false, note: "tanggal, untuk tren dari waktu ke waktu" },
-  { name: "username", required: false, note: "ditampilkan di tabel hasil" },
+  { name: "Tweet", required: true, note: "Kolom Teks Utama Yang Dianalisis" },
+  { name: "created_at", required: false, note: "Timestamp untuk agregasi tren temporal" },
+  { name: "username", required: false, note: "Atribut identitas akun (opsional)" },
 ];
 
-const features = ["CSV & XLSX", "Klasifikasi otomatis", "Grafik & tabel siap pakai"];
+const features = ["CSV / XLSX Support", "Pemrosesan Real-time", "Ekspor Visualisasi"];
 
 const initialResults: Record<FaseKey, AnalysisResult | null> = {
   pra: null,
@@ -31,8 +31,8 @@ const initialResults: Record<FaseKey, AnalysisResult | null> = {
 
 function CheckIcon() {
   return (
-    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="shrink-0 text-sage">
-      <path d="M2 6.2l2.6 2.6L10 3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="shrink-0 text-emerald-600">
+      <path d="M13.333 4L6 11.333 2.667 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -55,100 +55,102 @@ export default function Home() {
   const activeResult = activeFase ? results[activeFase] : null;
 
   return (
-    <main>
-      {/* Nav */}
-      <header className="sticky top-0 z-50 border-b border-ink/10 bg-paper/80 backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4 sm:px-10">
-          <a href="#" className="flex items-center gap-2.5">
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-ink font-display text-sm text-paper">R</span>
-            <span className="font-display text-lg tracking-tight text-ink">Rasa</span>
+    <main className="min-h-screen">
+      {/* Navigation */}
+      <header className="sticky top-0 z-50 border-b border-stone-200/80 bg-[#FBF9F5]/90 backdrop-blur-md">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3.5 sm:px-8">
+          <a href="#" className="flex items-center gap-2.5 group">
+            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-stone-900 font-mono text-xs font-bold text-white shadow-sm transition-transform group-hover:scale-105">R</span>
           </a>
-          <nav className="hidden items-center gap-8 font-mono text-xs uppercase tracking-wide text-muted sm:flex">
-            <a href="#cara-kerja" className="transition-colors hover:text-ink">
-              Cara kerja
+
+          <nav className="hidden items-center gap-6 font-mono text-xs uppercase tracking-wider text-stone-600 sm:flex">
+            <a href="#cara-kerja" className="transition-colors hover:text-stone-900">
+              Cara Kerja
             </a>
-            <a href="#format" className="transition-colors hover:text-ink">
-              Format file
+            <a href="#format" className="transition-colors hover:text-stone-900">
+              Format Data
             </a>
           </nav>
-          <a href="#unggah" className="rounded-full bg-ink px-4 py-2 font-sans text-sm text-paper transition-transform duration-200 hover:scale-[1.04]">
-            Mulai analisis
+
+          <a href="#unggah" className="inline-flex items-center justify-center rounded-lg bg-stone-900 px-4 py-2 font-sans text-xs font-semibold text-white shadow-sm hover:bg-stone-800 transition-all active:scale-[0.98]">
+            Mulai Analisis
           </a>
         </div>
       </header>
 
-      {/* Hero */}
-      <section id="unggah" className="relative overflow-hidden">
-        <div aria-hidden className="pointer-events-none absolute -top-16 right-[-4rem] h-72 w-72 rounded-full bg-turmeric/10 blur-3xl" />
-        <div className="mx-auto grid max-w-6xl gap-12 px-6 pb-20 pt-14 sm:px-10 sm:pb-28 sm:pt-20 lg:grid-cols-[1.1fr_1fr] lg:items-center">
-          <div className="motion-safe:animate-rise-in">
-            <span className="inline-flex items-center gap-2 rounded-full border border-ink/10 bg-white/60 px-3 py-1 font-mono text-[11px] uppercase tracking-[0.14em] text-muted">
-              <span className="h-1.5 w-1.5 rounded-full bg-sage" />
-              Analisis sentimen otomatis
-            </span>
+      {/* Hero Section */}
+      <section id="unggah" className="border-b border-stone-200/60 bg-gradient-to-b from-transparent to-stone-100/40">
+        <div className="mx-auto max-w-7xl px-6 py-16 sm:px-8 sm:py-24 lg:grid lg:grid-cols-12 lg:gap-12 lg:items-start">
+          <div className="lg:col-span-7">
+            <div className="inline-flex items-center gap-2 rounded-full border border-stone-200 bg-white/80 px-3 py-1 font-mono text-[11px] text-stone-600 shadow-2xs">
+              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+              Engine Analisis Sentimen v2.0
+            </div>
 
-            <h1 className="mt-6 font-display text-4xl leading-[1.08] text-ink sm:text-5xl lg:text-[3.4rem]">
-              Ribuan cuitan soal <span className="text-turmeric-deep">Makan Bergizi Gratis.</span> Satu jawaban jelas.
+            <h1 className="mt-5 font-sans text-3xl font-extrabold tracking-tight text-stone-900 sm:text-5xl lg:text-[2.75rem] lg:leading-[1.15]">
+              Bedah opini publik seputar <br className="hidden sm:inline" />
+              <span className="font-serif italic font-normal text-amber-700">"Makan Bergizi Gratis"</span> secara ilmiah.
             </h1>
 
-            <p className="mt-6 max-w-md font-sans text-base leading-relaxed text-muted">
-              Unggah data tweet dalam format CSV atau XLSX, dan lihat bagaimana publik benar-benar merespons — positif, negatif, atau netral — dalam hitungan detik.
-            </p>
+            <p className="mt-5 max-w-xl font-sans text-base leading-relaxed text-stone-600">Transformasikan ribuan baris percakapan tidak terstruktur menjadi data kuantitatif. Klasifikasi cepat, akurat, dan siap dianalisis.</p>
 
-            <ul className="mt-6 flex flex-wrap gap-x-6 gap-y-2">
+            <div className="mt-6 flex flex-wrap gap-4 border-y border-stone-200/60 py-3.5">
               {features.map((f) => (
-                <li key={f} className="flex items-center gap-1.5 font-mono text-xs text-muted">
-                  <CheckIcon /> {f}
-                </li>
+                <div key={f} className="flex items-center gap-2 font-mono text-xs text-stone-600">
+                  <CheckIcon />
+                  <span>{f}</span>
+                </div>
               ))}
-            </ul>
+            </div>
 
-            <div className="mt-10">
+            <div className="mt-8">
               <PhaseUploadWizard onAllDone={() => setSemuaSelesai(true)} onPhaseAnalyzed={handlePhaseAnalyzed} />
             </div>
           </div>
 
-          <div className="motion-safe:animate-rise-in lg:[animation-delay:150ms]">
-            <AnnotatedSample />
+          <div className="mt-12 lg:mt-0 lg:col-span-5">
+            <div className="sticky top-24 rounded-2xl border border-stone-200 bg-white p-2 shadow-xl shadow-stone-900/5">
+              <AnnotatedSample />
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Analisis temporal */}
+      {/* Analisis Temporal (Conditional) */}
       {semuaSelesai && (
-        <section className="bg-paper-deep/40">
-          <div className="section-divider" />
-          <div className="mx-auto max-w-6xl px-6 py-16 sm:px-10">
-            <p className="eyebrow mb-2">Analisis temporal</p>
-            <h2 className="mb-8 font-display text-2xl text-ink sm:text-3xl">Perubahan sentimen sepanjang tiga fase kebijakan</h2>
+        <section className="border-b border-stone-200/80 bg-stone-100/30">
+          <div className="mx-auto max-w-7xl px-6 py-16 sm:px-8">
+            <div className="mb-6">
+              <p className="eyebrow">Visualisasi Tren</p>
+              <h2 className="mt-1 font-sans text-2xl font-bold tracking-tight text-stone-900">Pergeseran Sentimen Lintas Fase</h2>
+            </div>
             <TemporalDashboard />
           </div>
         </section>
       )}
 
-      {/* Hasil analisis per fase */}
+      {/* Result Section */}
       {activeResult && activeFase && (
-        <section ref={resultRef} className="scroll-mt-6 bg-paper-deep/40">
-          <div className="section-divider" />
-          <div className="mx-auto max-w-6xl px-6 py-16 sm:px-10">
-            <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
+        <section ref={resultRef} className="scroll-mt-12 border-b border-stone-200/80 bg-stone-50/50">
+          <div className="mx-auto max-w-7xl px-6 py-16 sm:px-8">
+            <div className="mb-8 flex flex-wrap items-center justify-between gap-4 border-b border-stone-200/80 pb-6">
               <div>
-                <p className="eyebrow mb-2">Hasil analisis</p>
-                <h2 className="font-display text-2xl text-ink sm:text-3xl">{activeResult.total} tweet sudah diberi label.</h2>
+                <p className="eyebrow">Ringkasan Hasil</p>
+                <h2 className="mt-1 font-sans text-2xl font-bold text-stone-900">{activeResult.total.toLocaleString("id-ID")} Data Tweet Terproses</h2>
               </div>
-              <button type="button" onClick={() => setActiveFase(null)} className="rounded-full border border-ink/15 px-4 py-1.5 font-mono text-xs text-muted transition-colors hover:border-ink/30 hover:text-ink">
-                Tutup hasil
+              <button type="button" onClick={() => setActiveFase(null)} className="rounded-lg border border-stone-300 bg-white px-3.5 py-1.5 font-mono text-xs font-medium text-stone-700 shadow-2xs hover:bg-stone-50">
+                Tutup Ringkasan
               </button>
             </div>
 
             {faseSelesai.length > 1 && (
-              <div className="mb-8 flex gap-2">
+              <div className="mb-6 flex gap-2">
                 {faseSelesai.map(({ key, label }) => (
                   <button
                     key={key}
                     type="button"
                     onClick={() => setActiveFase(key)}
-                    className={`rounded-full px-4 py-1.5 font-mono text-xs transition-colors ${activeFase === key ? "bg-ink text-paper" : "border border-ink/15 text-muted hover:border-ink/30 hover:text-ink"}`}
+                    className={`rounded-lg px-3.5 py-1.5 font-mono text-xs transition-all ${activeFase === key ? "bg-stone-900 text-white shadow-sm" : "border border-stone-200 bg-white text-stone-600 hover:border-stone-300"}`}
                   >
                     {label}
                   </button>
@@ -156,83 +158,84 @@ export default function Home() {
               </div>
             )}
 
-            <div className="mb-8">
-              <ResultSummary total={activeResult.total} counts={activeResult.counts} ratio={activeResult.ratio} />
+            <div className="grid gap-6 lg:grid-cols-12">
+              <div className="lg:col-span-5">
+                <ResultSummary total={activeResult.total} counts={activeResult.counts} ratio={activeResult.ratio} />
+              </div>
+              <div className="lg:col-span-7">
+                <SentimentChart counts={activeResult.counts} />
+              </div>
             </div>
 
-            <div className="mb-8">
-              <SentimentChart counts={activeResult.counts} />
-            </div>
-
-            <div>
-              <p className="eyebrow mb-4">Rincian per tweet</p>
+            <div className="mt-10">
+              <p className="eyebrow mb-3">Tabel Eksplorasi Data</p>
               <TweetTable results={activeResult.results} />
             </div>
           </div>
         </section>
       )}
 
-      {/* Cara kerja — timeline, bukan grid polos */}
-      <section id="cara-kerja" className="bg-paper-deep/50">
-        <div className="section-divider" />
-        <div className="mx-auto max-w-6xl px-6 py-20 sm:px-10">
-          <p className="eyebrow mb-3">Cara kerja</p>
-          <h2 className="mb-14 max-w-lg font-display text-2xl text-ink sm:text-3xl">Tiga langkah dari file mentah ke kesimpulan.</h2>
+      {/* Cara Kerja */}
+      <section id="cara-kerja" className="border-b border-stone-200/80 bg-white py-20">
+        <div className="mx-auto max-w-7xl px-6 sm:px-8">
+          <p className="eyebrow">Sistem Kerja</p>
+          <h2 className="mt-1 font-sans text-2xl font-bold text-stone-900 sm:text-3xl">Tiga Langkah Pengolahan Data</h2>
 
-          <div className="relative grid gap-10 sm:grid-cols-3 sm:gap-8">
-            <div aria-hidden className="absolute left-5 right-5 top-5 hidden h-px bg-ink/10 sm:block" />
+          <div className="mt-12 grid gap-8 sm:grid-cols-3">
             {steps.map((s) => (
-              <div key={s.n} className="relative">
-                <span className="relative z-10 flex h-10 w-10 items-center justify-center rounded-full border border-ink/15 bg-paper-deep font-mono text-sm text-turmeric-deep">{s.n}</span>
-                <h3 className="mt-4 font-display text-xl text-ink">{s.title}</h3>
-                <p className="mt-2 font-sans text-sm leading-relaxed text-muted">{s.body}</p>
+              <div key={s.n} className="relative rounded-xl border border-stone-200/80 bg-[#FBF9F5]/50 p-6">
+                <span className="font-mono text-xs font-bold text-amber-700 bg-amber-100/60 px-2 py-1 rounded">Langkah {s.n}</span>
+                <h3 className="mt-4 font-sans text-lg font-bold text-stone-900">{s.title}</h3>
+                <p className="mt-2 font-sans text-sm text-stone-600 leading-relaxed">{s.body}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Format CSV */}
-      <section id="format" className="mx-auto max-w-6xl px-6 py-20 sm:px-10">
-        <div className="grid gap-10 lg:grid-cols-[1fr_1.3fr] lg:gap-16">
-          <div>
-            <p className="eyebrow mb-3">Format file</p>
-            <h2 className="font-display text-2xl text-ink sm:text-3xl">Kolom yang dikenali.</h2>
-            <p className="mt-4 font-sans text-sm leading-relaxed text-muted">File bisa berupa CSV atau XLSX. Cukup satu kolom teks yang wajib ada. Kolom lain sifatnya opsional dan akan dipakai untuk memperkaya tampilan hasil.</p>
-          </div>
+      {/* Format File */}
+      <section id="format" className="py-20">
+        <div className="mx-auto max-w-7xl px-6 sm:px-8">
+          <div className="grid gap-10 lg:grid-cols-12 lg:items-start">
+            <div className="lg:col-span-4">
+              <p className="eyebrow">Spesifikasi Input</p>
+              <h2 className="mt-1 font-sans text-2xl font-bold text-stone-900">Format Kolom File</h2>
+              <p className="mt-3 font-sans text-sm text-stone-600 leading-relaxed">Sistem secara cerdas mendeteksi variasi nama kolom secara fleksibel. Pastikan file Anda memenuhi kriteria minimal berikut.</p>
+            </div>
 
-          <div className="card-surface overflow-hidden">
-            <table className="w-full text-left font-mono text-sm">
-              <thead>
-                <tr className="border-b border-ink/10 text-[11px] uppercase tracking-wide text-muted">
-                  <th className="px-5 py-3 font-medium">Kolom</th>
-                  <th className="px-5 py-3 font-medium">Wajib</th>
-                  <th className="px-5 py-3 font-medium">Keterangan</th>
-                </tr>
-              </thead>
-              <tbody>
-                {csvColumns.map((c) => (
-                  <tr key={c.name} className="border-b border-ink/5 transition-colors last:border-0 hover:bg-ink/[0.03]">
-                    <td className="px-5 py-3 text-ink">{c.name}</td>
-                    <td className="px-5 py-3">{c.required ? <span className="tag-chip tag-chip--negative">ya</span> : <span className="text-muted">tidak</span>}</td>
-                    <td className="px-5 py-3 font-sans text-muted">{c.note}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <div className="lg:col-span-8">
+              <div className="card-surface overflow-hidden">
+                <table className="w-full text-left font-sans text-sm">
+                  <thead className="border-b border-stone-200 bg-stone-50/80 font-mono text-[11px] uppercase tracking-wider text-stone-500">
+                    <tr>
+                      <th className="px-6 py-3 font-semibold">Nama Kolom</th>
+                      <th className="px-6 py-3 font-semibold">Status</th>
+                      <th className="px-6 py-3 font-semibold">Fungsi Dalam Sistem</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-stone-200/60 font-sans">
+                    {csvColumns.map((c) => (
+                      <tr key={c.name} className="hover:bg-stone-50/50 transition-colors">
+                        <td className="px-6 py-4 font-mono font-medium text-stone-900">{c.name}</td>
+                        <td className="px-6 py-4">{c.required ? <span className="tag-chip tag-chip--negative">Wajib</span> : <span className="tag-chip tag-chip--neutral">Opsional</span>}</td>
+                        <td className="px-6 py-4 text-stone-600 text-xs sm:text-sm">{c.note}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-paper-deep/30">
-        <div className="section-divider" />
-        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-10 sm:flex-row sm:items-center sm:justify-between sm:px-10">
-          <a href="#" className="flex items-center gap-2.5">
-            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-ink font-display text-xs text-paper">R</span>
-            <span className="font-display text-lg text-ink">Rasa</span>
-          </a>
-          <p className="font-mono text-[11px] text-muted">Dibangun untuk analisis sentimen data tweet berbahasa Indonesia</p>
+      <footer className="border-t border-stone-200 bg-white py-10">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 sm:flex-row sm:px-8">
+          <div className="flex items-center gap-2">
+            <span className="flex h-6 w-6 items-center justify-center rounded bg-stone-900 font-mono text-[10px] font-bold text-white">R</span>
+          </div>
+          <p className="font-mono text-xs text-stone-500">© {new Date().getFullYear()} Teroptimasi untuk Bahasa Indonesia.</p>
         </div>
       </footer>
     </main>

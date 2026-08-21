@@ -5,20 +5,32 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ink: "#191F1B",
-        paper: "#F2EEE1",
-        "paper-deep": "#E7E1CD",
-        turmeric: "#D69A2D",
-        "turmeric-deep": "#B8811F",
-        sage: "#587A52",
-        brick: "#A44432",
-        muted: "#767065",
-        "muted-deep": "#5A5550",
+        // Deep Slate/Navy untuk teks & elemen gelap utama
+        ink: "#0F172A",
+        // Latar belakang warm off-white bernuansa pastel dingin
+        paper: "#F8FAFC",
+        "paper-deep": "#F1F5F9",
+
+        // Aksentulasi Utama: Biru Prabowo (Pastel Sky Blue) & Varian Deep-nya
+        turmeric: "#60A5FA", // Aksen terang (Light Blue)
+        "turmeric-deep": "#2563EB", // Aksen tegas (Brand Blue)
+
+        // Indikator Sentimen & Status
+        sage: "#059669", // Positif (Emerald Green)
+        brick: "#E11D48", // Negatif (Rose Red)
+
+        // Muted Colors untuk border & secondary text
+        muted: "#64748B",
+        "muted-deep": "#334155",
       },
       fontFamily: {
-        display: ["var(--font-fraunces)", "serif"],
-        sans: ["var(--font-inter)", "sans-serif"],
-        mono: ["var(--font-plex-mono)", "monospace"],
+        sans: ["var(--font-sans)", "sans-serif"],
+        serif: ["var(--font-serif)", "serif"],
+        mono: ["var(--font-mono)", "monospace"],
+      },
+      boxShadow: {
+        "2xs": "0 1px 2px 0 rgba(0, 0, 0, 0.03)",
+        "blue-glow": "0 4px 20px -2px rgba(37, 99, 235, 0.12)",
       },
       keyframes: {
         tagPop: {

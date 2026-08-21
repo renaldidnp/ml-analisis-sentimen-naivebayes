@@ -1,35 +1,38 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter, IBM_Plex_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans, Newsreader, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const fraunces = Fraunces({
+// Font sans modern menggantikan Inter standar
+const sans = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  variable: "--font-fraunces",
-  weight: ["400", "500", "600"],
-  style: ["normal", "italic"],
+  variable: "--font-sans",
+  weight: ["400", "500", "600", "700"],
 });
 
-const inter = Inter({
+// Editorial Serif untuk accent/heading
+const serif = Newsreader({
   subsets: ["latin"],
-  variable: "--font-inter",
-  weight: ["400", "500", "600"],
+  variable: "--font-serif",
+  weight: ["400", "500"],
+  style: ["italic", "normal"],
 });
 
-const plexMono = IBM_Plex_Mono({
+// Mono font untuk data / code look
+const mono = JetBrains_Mono({
   subsets: ["latin"],
-  variable: "--font-plex-mono",
+  variable: "--font-mono",
   weight: ["400", "500"],
 });
 
 export const metadata: Metadata = {
-  title: "Rasa — Analisis Sentimen dari CSV Tweet",
-  description: "Unggah data tweet dalam format CSV dan lihat ringkasan sentimen publik dalam hitungan detik.",
+  title: "Analisis Sentimen Data Tweet CSV",
+  description: "Platform analitik sentimen opini publik berbasis AI dengan representasi data yang presisi.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="id">
-      <body className={`${fraunces.variable} ${inter.variable} ${plexMono.variable}`}>{children}</body>
+    <html lang="id" className={`${sans.variable} ${serif.variable} ${mono.variable}`}>
+      <body>{children}</body>
     </html>
   );
 }
