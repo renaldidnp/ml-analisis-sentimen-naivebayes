@@ -6,7 +6,9 @@ import UploadDropzone from "@/components/UploadDropzone";
 import ResultSummary from "@/components/ResultSummary";
 import SentimentChart from "@/components/SentimentChart";
 import TweetTable from "@/components/TweetTable";
-import type { AnalysisResult } from "@/lib/api";
+import PhaseUploadWizard from "@/components/PhaseUploadWizard";
+import TemporalDashboard from "@/components/TemporalDashboard";
+import type { AnalysisResult, FaseKey } from "@/lib/api";
 
 const steps = [
   {
@@ -34,10 +36,11 @@ const csvColumns = [
 
 export default function Home() {
   const [result, setResult] = useState<AnalysisResult | null>(null);
+  const [semuaSelesai, setSemuaSelesai] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
 
-  const handleAnalyzed = (r: AnalysisResult) => {
-    setResult(r);
+  const handlePhaseAnalyzed = (fase: FaseKey, r: AnalysisResult) => {
+    setResult(r); // atau gabungkan dengan hasil fase lain kalau perlu total keseluruhan
     requestAnimationFrame(() => {
       resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
@@ -71,7 +74,7 @@ export default function Home() {
           <p className="mt-6 max-w-md font-sans text-base leading-relaxed text-muted">Unggah data tweet dalam format CSV atau XLSX, dan lihat bagaimana publik benar-benar merespons — positif, negatif, atau netral — dalam hitungan detik.</p>
 
           <div className="mt-10">
-            <UploadDropzone onSuccess={handleAnalyzed} />
+            <PhaseUploadWizard onAllDone={() => setSemuaSelesai(true)} onPhaseAnalyzed={handlePhaseAnalyzed} />
           </div>
         </div>
 
@@ -79,6 +82,17 @@ export default function Home() {
           <AnnotatedSample />
         </div>
       </section>
+
+      {/* Analisis temporal */}
+      {semuaSelesai && (
+        <section className="border-t border-ink/10 bg-paper-deep/40">
+          <div className="mx-auto max-w-6xl px-6 py-16 sm:px-10">
+            <p className="eyebrow mb-2">Analisis temporal</p>
+            <h2 className="mb-8 font-display text-2xl text-ink sm:text-3xl">Perubahan sentimen sepanjang tiga fase kebijakan</h2>
+            <TemporalDashboard />
+          </div>
+        </section>
+      )}
 
       {/* Hasil analisis - tampil di halaman yang sama, tanpa pindah route */}
       {result && (

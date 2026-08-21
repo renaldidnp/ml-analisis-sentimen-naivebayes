@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api import preprocess_debug
+from app.api import temporal
 
 
 from app.api.analyze import router as analyze_router
@@ -18,6 +19,7 @@ app.add_middleware(
 
 app.include_router(analyze_router, prefix="/api")
 app.include_router(preprocess_debug.router, prefix="/api", tags=["debug"])
+app.include_router(temporal.router, prefix="/api", tags=["temporal"])
 
 
 @app.get("/")
